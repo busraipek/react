@@ -6,6 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Project2.Controllers;
+using OfficeOpenXml;  // EPPlus namespace
+
+using Microsoft.Extensions.DependencyInjection;
+using Project2.Services;
 
 namespace Project2
 {
@@ -13,6 +18,7 @@ namespace Project2
     {
         public static void Main(string[] args)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // Lisans baðlamýný burada ayarlayýn
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -21,6 +27,10 @@ namespace Project2
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<FlightDataService>();
                 });
     }
 }
