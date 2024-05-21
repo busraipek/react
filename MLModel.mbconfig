@@ -1,0 +1,188 @@
+﻿{
+  "Scenario": "Classification",
+  "DataSource": {
+    "Version": 3,
+    "EscapeCharacter": "\"",
+    "ReadMultiLines": false,
+    "KeepDiacritics": false,
+    "KeepPunctuations": false,
+    "AllowQuoting": false,
+    "Type": "TabularFile",
+    "FilePath": "C:\\Users\\90505\\source\\repos\\Project2\\FlightData.csv",
+    "Delimiter": ";",
+    "DecimalMarker": ".",
+    "HasHeader": true,
+    "ColumnProperties": [
+      {
+        "ColumnName": "Time",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Date",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "IATA",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Destination",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Flight",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Airline",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Status",
+        "ColumnPurpose": "Label",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      }
+    ]
+  },
+  "Environment": {
+    "Type": "LocalCPU",
+    "Version": 1
+  },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "FastTreeOva",
+        "Score": 0.25666666666666665,
+        "RuntimeInSeconds": 10.117,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * e15",
+          "e0": {
+            "OutputColumnNames": [
+              "Date"
+            ],
+            "InputColumnNames": [
+              "Date"
+            ]
+          },
+          "e1": {
+            "InputColumnName": "Time",
+            "OutputColumnName": "Time"
+          },
+          "e15": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          },
+          "e2": {
+            "InputColumnName": "IATA",
+            "OutputColumnName": "IATA"
+          },
+          "e3": {
+            "InputColumnName": "Destination",
+            "OutputColumnName": "Destination"
+          },
+          "e4": {
+            "InputColumnName": "Flight",
+            "OutputColumnName": "Flight"
+          },
+          "e5": {
+            "InputColumnName": "Airline",
+            "OutputColumnName": "Airline"
+          },
+          "e6": {
+            "InputColumnNames": [
+              "Date",
+              "Time",
+              "IATA",
+              "Destination",
+              "Flight",
+              "Airline"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e7": {
+            "OutputColumnName": "Status",
+            "InputColumnName": "Status",
+            "AddKeyValueAnnotationsAsText": false
+          },
+          "e8": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 20,
+            "NumberOfTrees": 4,
+            "MaximumBinCountPerFeature": 254,
+            "FeatureFraction": 1.0,
+            "LearningRate": 0.099999999999999978,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features",
+            "DiskTranspose": false
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "OneHotEncoding",
+      "e1": "FeaturizeText",
+      "e2": "FeaturizeText",
+      "e3": "FeaturizeText",
+      "e4": "FeaturizeText",
+      "e5": "FeaturizeText",
+      "e6": "Concatenate",
+      "e7": "MapValueToKey",
+      "e8": "FastTreeOva",
+      "e9": "FastForestOva",
+      "e10": "LightGbmMulti",
+      "e11": "LbfgsLogisticRegressionOva",
+      "e12": "LbfgsMaximumEntropyMulti",
+      "e13": "SdcaMaximumEntropyMulti",
+      "e14": "SdcaLogisticRegressionOva",
+      "e15": "MapKeyToValue"
+    },
+    "Schema": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * (e8 + e9 + e10 + e11 + e12 + e13 + e14) * e15",
+    "MetricName": "MacroAccuracy",
+    "ModelFilePath": "C:\\Users\\90505\\source\\repos\\Project2\\MLModel.mlnet"
+  },
+  "Type": "TrainingConfig",
+  "Version": 5,
+  "TrainingOption": {
+    "Version": 2,
+    "Subsampling": false,
+    "Type": "ClassificationTrainingOption",
+    "TrainingTime": 15,
+    "LabelColumn": "Status",
+    "ValidationOption": {
+      "Version": 0,
+      "Type": "CrossValidationValidationOption",
+      "NumberOfFolds": 5
+    }
+  }
+}

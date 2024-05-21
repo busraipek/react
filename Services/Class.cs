@@ -40,7 +40,7 @@ namespace Project2.Services
         {
             var flightDataList = new List<FlightData>();
             var web = new HtmlWeb();
-            var doc = web.Load("https://www.avionio.com/en/airport/saw/departures");
+            var doc = web.Load("https://www.avionio.com/en/airport/saw/departures?ts=1716062400000");
 
             var rows = doc.DocumentNode.SelectNodes("//tr[@class='tt-row ']");
             if (rows != null)
@@ -65,7 +65,7 @@ namespace Project2.Services
 
         private void ExportToExcel(List<FlightData> flightDataList)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "FlightData.xlsm");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "FlightData.csv");
 
             // Check if the file exists
             FileInfo file = new FileInfo(filePath);
@@ -133,16 +133,5 @@ namespace Project2.Services
         {
             _timer?.Dispose();
         }
-    }
-
-    public class FlightData
-    {
-        public string Time { get; set; }
-        public string Date { get; set; }
-        public string IATA { get; set; }
-        public string Destination { get; set; }
-        public string Flight { get; set; }
-        public string Airline { get; set; }
-        public string Status { get; set; }
     }
 }
