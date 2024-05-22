@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using OfficeOpenXml;
-using System.IO;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System;
-using System.Linq;
 
 namespace Project2.Services
 {
@@ -15,25 +13,32 @@ namespace Project2.Services
     {
         private Timer _timer;
         private readonly ILogger<FlightDataService> _logger;
-        private readonly string _filePath;
+        private readonly string _connectionString;
 
         public FlightDataService(ILogger<FlightDataService> logger)
         {
             _logger = logger;
-            _filePath = Path.Combine(Directory.GetCurrentDirectory(),  "FlightData.xlsx");
+            _connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=FlightData;Integrated Security=True;";
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(1)); // Intervali 10 saniye olarak ayarladık
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10)); // Intervali 1 saat olarak ayarladık
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-            var flightDataList = GetFlightData();
-            ExportToExcel(flightDataList);
-            _logger.LogInformation("Flight data fetched and exported to Excel at: {time}", DateTimeOffset.Now);
+            try
+            {
+                var flightDataList = GetFlightData();
+                ExportToSqlServer(flightDataList);
+                _logger.LogInformation("Flight data fetched and exported to SQL Server at: {time}", DateTimeOffset.Now);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching or exporting flight data.");
+            }
         }
 
         private List<FlightData> GetFlightData()
@@ -63,63 +68,32 @@ namespace Project2.Services
             return flightDataList;
         }
 
-        private void ExportToExcel(List<FlightData> flightDataList)
+        private void ExportToSqlServer(List<FlightData> flightDataList)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "FlightData.csv");
-
-            // Check if the file exists
-            FileInfo file = new FileInfo(filePath);
-            ExcelPackage package;
-            if (file.Exists)
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                // If the file exists, load it
-                using (var stream = new FileStream(filePath, FileMode.Open))
+                try
                 {
-                    package = new ExcelPackage(stream);
+                    conn.Open();
+                    foreach (var flight in flightDataList)
+                    {
+                        var command = new SqlCommand("INSERT INTO departuresdata (Time, Date, IATA, Destination, Flight, Airline, Status) VALUES (@Time, @Date, @IATA, @Destination, @Flight, @Airline, @Status)", conn);
+
+                        command.Parameters.AddWithValue("@Time", flight.Time);
+                        command.Parameters.AddWithValue("@Date", flight.Date);
+                        command.Parameters.AddWithValue("@IATA", flight.IATA);
+                        command.Parameters.AddWithValue("@Destination", flight.Destination);
+                        command.Parameters.AddWithValue("@Flight", flight.Flight);
+                        command.Parameters.AddWithValue("@Airline", flight.Airline);
+                        command.Parameters.AddWithValue("@Status", flight.Status);
+
+                        command.ExecuteNonQuery();
+                    }
                 }
-            }
-            else
-            {
-                // If the file doesn't exist, create a new package
-                package = new ExcelPackage();
-            }
-
-            // Get the worksheet or create a new one if it doesn't exist
-            var worksheet = package.Workbook.Worksheets.FirstOrDefault(ws => ws.Name == "Flight Data");
-            if (worksheet == null)
-            {
-                worksheet = package.Workbook.Worksheets.Add("Flight Data");
-
-                // Add headers if the worksheet is newly created
-                worksheet.Cells["A1"].Value = "Time";
-                worksheet.Cells["B1"].Value = "Date";
-                worksheet.Cells["C1"].Value = "IATA";
-                worksheet.Cells["D1"].Value = "Destination";
-                worksheet.Cells["E1"].Value = "Flight";
-                worksheet.Cells["F1"].Value = "Airline";
-                worksheet.Cells["G1"].Value = "Status";
-            }
-
-            // Find the last used row
-            int startRow = worksheet.Dimension.End.Row + 1;
-
-            // Add data
-            for (int i = 0; i < flightDataList.Count; i++)
-            {
-                var flight = flightDataList[i];
-                worksheet.Cells[startRow + i, 1].Value = flight.Time;
-                worksheet.Cells[startRow + i, 2].Value = flight.Date;
-                worksheet.Cells[startRow + i, 3].Value = flight.IATA;
-                worksheet.Cells[startRow + i, 4].Value = flight.Destination;
-                worksheet.Cells[startRow + i, 5].Value = flight.Flight;
-                worksheet.Cells[startRow + i, 6].Value = flight.Airline;
-                worksheet.Cells[startRow + i, 7].Value = flight.Status;
-            }
-
-            // Save the Excel package to the file
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                package.SaveAs(stream);
+                catch (SqlException ex)
+                {
+                    _logger.LogError(ex, "An error occurred while inserting data into SQL Server.");
+                }
             }
         }
 
@@ -133,5 +107,16 @@ namespace Project2.Services
         {
             _timer?.Dispose();
         }
+    }
+
+    public class FlightData
+    {
+        public string Time { get; set; }
+        public string Date { get; set; }
+        public string IATA { get; set; }
+        public string Destination { get; set; }
+        public string Flight { get; set; }
+        public string Airline { get; set; }
+        public string Status { get; set; }
     }
 }
