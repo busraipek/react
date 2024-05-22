@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
-using System;
 
 namespace Project2.Services
 {
@@ -14,6 +14,17 @@ namespace Project2.Services
         private Timer _timer;
         private readonly ILogger<FlightDataService> _logger;
         private readonly string _connectionString;
+        private readonly string[] _urls = new string[]
+        {
+            "https://www.avionio.com/en/airport/saw/departures?ts=1715965200000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1715976000000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716393600000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1715972400000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716400800000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716404400000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1715968800000"
+            // Add more URLs here
+        };
 
         public FlightDataService(ILogger<FlightDataService> logger)
         {
@@ -23,7 +34,7 @@ namespace Project2.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10)); // Intervali 1 saat olarak ayarladık
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(1)); // Intervali 1 saat olarak ayarladık
             return Task.CompletedTask;
         }
 
@@ -31,9 +42,12 @@ namespace Project2.Services
         {
             try
             {
-                var flightDataList = GetFlightData();
-                ExportToSqlServer(flightDataList);
-                _logger.LogInformation("Flight data fetched and exported to SQL Server at: {time}", DateTimeOffset.Now);
+                foreach (var url in _urls)
+                {
+                    var flightDataList = GetFlightData(url);
+                    ExportToSqlServer(flightDataList);
+                    _logger.LogInformation("Flight data fetched and exported to SQL Server at: {time}", DateTimeOffset.Now);
+                }
             }
             catch (Exception ex)
             {
@@ -41,11 +55,11 @@ namespace Project2.Services
             }
         }
 
-        private List<FlightData> GetFlightData()
+        private List<FlightData> GetFlightData(string url)
         {
             var flightDataList = new List<FlightData>();
             var web = new HtmlWeb();
-            var doc = web.Load("https://www.avionio.com/en/airport/saw/departures?ts=1716062400000");
+            var doc = web.Load(url);
 
             var rows = doc.DocumentNode.SelectNodes("//tr[@class='tt-row ']");
             if (rows != null)
