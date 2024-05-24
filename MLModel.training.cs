@@ -6,49 +6,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ML.Data;
-using Microsoft.ML.Trainers.FastTree;
+using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
 using Microsoft.ML;
+using System.Data.SqlClient;
+using Microsoft.ML.Data;
 
 namespace Project2
 {
     public partial class MLModel
     {
-        public const string RetrainFilePath =  @"C:\Users\90505\source\repos\Project2\FlightData.csv";
-        public const char RetrainSeparatorChar = ';';
-        public const bool RetrainHasHeader =  true;
-        public const bool RetrainAllowQuoting =  false;
+        public const string RetrainConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FlightData;Integrated Security=True";
+        public const string RetrainCommandString = @"SELECT CAST([Time] as REAL), CAST([Flight] as NVARCHAR(MAX)), CAST([Airline] as NVARCHAR(MAX)), CAST([Status] as REAL) FROM [dbo].[egitimverisi]";
 
-         /// <summary>
+        /// <summary>
         /// Train a new model with the provided dataset.
         /// </summary>
         /// <param name="outputModelPath">File path for saving the model. Should be similar to "C:\YourPath\ModelName.mlnet"</param>
-        /// <param name="inputDataFilePath">Path to the data file for training.</param>
-        /// <param name="separatorChar">Separator character for delimited training file.</param>
-        /// <param name="hasHeader">Boolean if training file has a header.</param>
-        public static void Train(string outputModelPath, string inputDataFilePath = RetrainFilePath, char separatorChar = RetrainSeparatorChar, bool hasHeader = RetrainHasHeader, bool allowQuoting = RetrainAllowQuoting)
+        /// <param name="connectionString">Connection string for databases on-premises or in the cloud.</param>
+        /// <param name="commandText">Command string for selecting training data.</param>
+        public static void Train(string outputModelPath, string connectionString = RetrainConnectionString, string commandText = RetrainCommandString)
         {
             var mlContext = new MLContext();
 
-            var data = LoadIDataViewFromFile(mlContext, inputDataFilePath, separatorChar, hasHeader, allowQuoting);
+            var data = LoadIDataViewFromDatabase(mlContext, connectionString, commandText);
             var model = RetrainModel(mlContext, data);
             SaveModel(mlContext, model, data, outputModelPath);
         }
 
         /// <summary>
-        /// Load an IDataView from a file path.
+        /// Load an IDataView from a database source.For more information on how to load data, see aka.ms/loaddata.
         /// </summary>
         /// <param name="mlContext">The common context for all ML.NET operations.</param>
-        /// <param name="inputDataFilePath">Path to the data file for training.</param>
-        /// <param name="separatorChar">Separator character for delimited training file.</param>
-        /// <param name="hasHeader">Boolean if training file has a header.</param>
+        /// <param name="connectionString">Connection string for databases on-premises or in the cloud.</param>
+        /// <param name="commandText">Command string for selecting training data.</param>
         /// <returns>IDataView with loaded training data.</returns>
-        public static IDataView LoadIDataViewFromFile(MLContext mlContext, string inputDataFilePath, char separatorChar, bool hasHeader, bool allowQuoting)
+        public static IDataView LoadIDataViewFromDatabase(MLContext mlContext, string connectionString, string commandText)
         {
-            return mlContext.Data.LoadFromTextFile<ModelInput>(inputDataFilePath, separatorChar, hasHeader, allowQuoting: allowQuoting);
-        }
+            DatabaseLoader loader = mlContext.Data.CreateDatabaseLoader<ModelInput>();
+            DatabaseSource dbSource = new DatabaseSource(SqlClientFactory.Instance, connectionString, commandText);
 
+            return loader.Load(dbSource);
+        }
 
         /// <summary>
         /// Save a model at the specified path.
@@ -91,16 +91,10 @@ namespace Project2
         public static IEstimator<ITransformer> BuildPipeline(MLContext mlContext)
         {
             // Data process configuration with pipeline data transformations
-            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(@"Date", @"Date", outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"Time",outputColumnName:@"Time"))      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"IATA",outputColumnName:@"IATA"))      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"Destination",outputColumnName:@"Destination"))      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"Flight",outputColumnName:@"Flight"))      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"Airline",outputColumnName:@"Airline"))      
-                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Date",@"Time",@"IATA",@"Destination",@"Flight",@"Airline"}))      
-                                    .Append(mlContext.Transforms.Conversion.MapValueToKey(outputColumnName:@"Status",inputColumnName:@"Status",addKeyValueAnnotationsAsText:false))      
-                                    .Append(mlContext.MulticlassClassification.Trainers.OneVersusAll(binaryEstimator:mlContext.BinaryClassification.Trainers.FastTree(new FastTreeBinaryTrainer.Options(){NumberOfLeaves=4,MinimumExampleCountPerLeaf=20,NumberOfTrees=4,MaximumBinCountPerFeature=254,FeatureFraction=1,LearningRate=0.1,LabelColumnName=@"Status",FeatureColumnName=@"Features",DiskTranspose=false}),labelColumnName: @"Status"))      
-                                    .Append(mlContext.Transforms.Conversion.MapKeyToValue(outputColumnName:@"PredictedLabel",inputColumnName:@"PredictedLabel"));
+            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"Flight", @"Flight"),new InputOutputColumnPair(@"Airline", @"Airline")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
+                                    .Append(mlContext.Transforms.ReplaceMissingValues(@"Time", @"Time"))      
+                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Flight",@"Airline",@"Time"}))      
+                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=1163,NumberOfIterations=1280,MinimumExampleCountPerLeaf=33,LearningRate=0.41587318675526,LabelColumnName=@"Status",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.432178813061723,FeatureFraction=0.99999999,L1Regularization=2E-10,L2Regularization=0.393387867193105},MaximumBinCountPerFeature=136}));
 
             return pipeline;
         }

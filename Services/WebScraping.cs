@@ -9,24 +9,31 @@ using System.Threading;
 
 namespace Project2.Services
 {
-    public class FlightDataService : IHostedService, IDisposable
+    public class FlightWebScraping : IHostedService, IDisposable
     {
         private Timer _timer;
-        private readonly ILogger<FlightDataService> _logger;
+        private readonly ILogger<FlightWebScraping> _logger;
         private readonly string _connectionString;
         private readonly string[] _urls = new string[]
         {
-            "https://www.avionio.com/en/airport/saw/departures?ts=1715965200000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1715976000000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716393600000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1715972400000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716400800000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716404400000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1715968800000"
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716451200000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716454800000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716458400000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716462000000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716465600000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716469200000",
+
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716472800000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716476400000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716480000000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716483600000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716487200000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716490800000",
+            "https://www.avionio.com/en/airport/saw/departures?ts=1716494400000"
             // Add more URLs here
         };
 
-        public FlightDataService(ILogger<FlightDataService> logger)
+        public FlightWebScraping(ILogger<FlightWebScraping> logger)
         {
             _logger = logger;
             _connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=FlightData;Integrated Security=True;";
@@ -121,16 +128,5 @@ namespace Project2.Services
         {
             _timer?.Dispose();
         }
-    }
-
-    public class FlightData
-    {
-        public string Time { get; set; }
-        public string Date { get; set; }
-        public string IATA { get; set; }
-        public string Destination { get; set; }
-        public string Flight { get; set; }
-        public string Airline { get; set; }
-        public string Status { get; set; }
     }
 }

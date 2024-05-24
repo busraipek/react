@@ -1,19 +1,360 @@
 ﻿{
-  "Scenario": "Forecasting",
+  "Scenario": "Regression",
+  "DataSource": {
+    "Type": "SQL",
+    "Version": 1,
+    "ColumnProperties": [
+      {
+        "ColumnName": "Time",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Date",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "IATA",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Destination",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Flight",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Airline",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Status",
+        "ColumnPurpose": "Label",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "Gecikme",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      }
+    ],
+    "ConnectionString": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=FlightData;Integrated Security=True",
+    "CommandString": "SELECT CAST([Time] as REAL), CAST([Flight] as NVARCHAR(MAX)), CAST([Airline] as NVARCHAR(MAX)), CAST([Status] as REAL) FROM [dbo].[egitimverisi]",
+    "DatabaseName": "FlightData",
+    "SelectedTableDbo": "dbo",
+    "TableName": "egitimverisi"
+  },
   "Environment": {
     "Type": "LocalCPU",
     "Version": 1
   },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.89188170009385981,
+        "RuntimeInSeconds": 3.579,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Flight",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Flight",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Flight",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 1163,
+            "MinimumExampleCountPerLeaf": 33,
+            "LearningRate": 0.41587318675525975,
+            "NumberOfTrees": 1280,
+            "SubsampleFraction": 0.43217881306172284,
+            "MaximumBinCountPerFeature": 136,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.39338786719310476,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.89181742243119211,
+        "RuntimeInSeconds": 2.627,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Flight",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Flight",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Flight",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 1168,
+            "MinimumExampleCountPerLeaf": 32,
+            "LearningRate": 0.39542359179657555,
+            "NumberOfTrees": 968,
+            "SubsampleFraction": 0.42372167565709107,
+            "MaximumBinCountPerFeature": 133,
+            "FeatureFraction": 0.99459422406458242,
+            "L1Regularization": 2.1978907152851561E-10,
+            "L2Regularization": 0.38122137489436536,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.89169584877629982,
+        "RuntimeInSeconds": 4.067,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Flight",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Flight",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Flight",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 1157,
+            "MinimumExampleCountPerLeaf": 33,
+            "LearningRate": 0.43738034616545851,
+            "NumberOfTrees": 1591,
+            "SubsampleFraction": 0.44080474799829561,
+            "MaximumBinCountPerFeature": 138,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.4059426470974285,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.89149452461044132,
+        "RuntimeInSeconds": 4.204,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Flight",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Flight",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Flight",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 1208,
+            "MinimumExampleCountPerLeaf": 33,
+            "LearningRate": 0.3605971954414503,
+            "NumberOfTrees": 1612,
+            "SubsampleFraction": 0.3186847408983941,
+            "MaximumBinCountPerFeature": 134,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.34480148482618433,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.8913050558075003,
+        "RuntimeInSeconds": 2.148,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Flight",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Flight",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Flight",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 1219,
+            "MinimumExampleCountPerLeaf": 34,
+            "LearningRate": 0.41653680936352505,
+            "NumberOfTrees": 819,
+            "SubsampleFraction": 0.4437181188429003,
+            "MaximumBinCountPerFeature": 131,
+            "FeatureFraction": 0.98220637303064806,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.47405163131805433,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "OneHotEncoding",
+      "e1": "ReplaceMissingValues",
+      "e2": "Concatenate",
+      "e3": "FastTreeRegression",
+      "e4": "FastForestRegression",
+      "e5": "LightGbmRegression",
+      "e6": "LbfgsPoissonRegressionRegression",
+      "e7": "SdcaRegression"
+    },
+    "Schema": "e0 * e1 * e2 * (e3 + e4 + e5 + e6 + e7)",
+    "MetricName": "RSquared",
+    "ModelFilePath": "C:\\Users\\90505\\Desktop\\react\\MLModel.mlnet"
+  },
   "Type": "TrainingConfig",
   "Version": 5,
   "TrainingOption": {
-    "Version": 3,
-    "OptimizeMetric": "RMSE",
+    "Version": 2,
     "Subsampling": false,
-    "Type": "ForecastingTrainingOption",
-    "TrainingTime": 0,
-    "UseCrossValidation": false,
-    "Horizon": 10,
-    "UseDefaultIndex": false
+    "Type": "RegressionTrainingOption",
+    "TrainingTime": 300,
+    "LabelColumn": "Status",
+    "ValidationOption": {
+      "Version": 0,
+      "Type": "TrainValidateSplitValidationOption",
+      "SplitRatio": 0.2
+    }
   }
 }
