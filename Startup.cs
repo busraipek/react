@@ -20,12 +20,23 @@ namespace Project2
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp";
             });            
             services.AddControllers();
+            services.AddSingleton<IMLModelService, MLModelService>();
+
             services.AddHostedService<FlightWebScraping>();
             services.AddControllersWithViews();
         }
@@ -41,10 +52,9 @@ namespace Project2
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
+            app.UseCors("AllowAllOrigins");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
@@ -55,6 +65,7 @@ namespace Project2
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

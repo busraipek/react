@@ -16,21 +16,8 @@ namespace Project2.Services
         private readonly string _connectionString;
         private readonly string[] _urls = new string[]
         {
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716451200000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716454800000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716458400000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716462000000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716465600000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716469200000",
+            "https://www.avionio.com/en/airport/saw/departures",
 
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716472800000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716476400000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716480000000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716483600000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716487200000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716490800000",
-            "https://www.avionio.com/en/airport/saw/departures?ts=1716494400000"
-            // Add more URLs here
         };
 
         public FlightWebScraping(ILogger<FlightWebScraping> logger)

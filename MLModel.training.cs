@@ -11,14 +11,13 @@ using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
 using Microsoft.ML;
 using System.Data.SqlClient;
-using Microsoft.ML.Data;
 
 namespace Project2
 {
     public partial class MLModel
     {
         public const string RetrainConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FlightData;Integrated Security=True";
-        public const string RetrainCommandString = @"SELECT CAST([Time] as REAL), CAST([Flight] as NVARCHAR(MAX)), CAST([Airline] as NVARCHAR(MAX)), CAST([Status] as REAL) FROM [dbo].[egitimverisi]";
+        public const string RetrainCommandString = @"SELECT CAST([Time] as REAL), CAST([Destination] as NVARCHAR(MAX)), CAST([Airline] as NVARCHAR(MAX)), CAST([Status] as REAL) FROM [dbo].[egitimverisi]";
 
         /// <summary>
         /// Train a new model with the provided dataset.
@@ -49,7 +48,7 @@ namespace Project2
 
             return loader.Load(dbSource);
         }
-
+        ///
         /// <summary>
         /// Save a model at the specified path.
         /// </summary>
@@ -91,10 +90,10 @@ namespace Project2
         public static IEstimator<ITransformer> BuildPipeline(MLContext mlContext)
         {
             // Data process configuration with pipeline data transformations
-            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"Flight", @"Flight"),new InputOutputColumnPair(@"Airline", @"Airline")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
+            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"Destination", @"Destination"),new InputOutputColumnPair(@"Airline", @"Airline")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
                                     .Append(mlContext.Transforms.ReplaceMissingValues(@"Time", @"Time"))      
-                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Flight",@"Airline",@"Time"}))      
-                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=1163,NumberOfIterations=1280,MinimumExampleCountPerLeaf=33,LearningRate=0.41587318675526,LabelColumnName=@"Status",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.432178813061723,FeatureFraction=0.99999999,L1Regularization=2E-10,L2Regularization=0.393387867193105},MaximumBinCountPerFeature=136}));
+                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Destination",@"Airline",@"Time"}))      
+                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=3437,NumberOfIterations=985,MinimumExampleCountPerLeaf=20,LearningRate=0.999999776672986,LabelColumnName=@"Status",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.0199488529292958,FeatureFraction=0.878941347195788,L1Regularization=2.97000976522576E-10,L2Regularization=0.318793289359714},MaximumBinCountPerFeature=250}));
 
             return pipeline;
         }

@@ -19,9 +19,9 @@ namespace Project2
             [ColumnName(@"Time")]
             public float Time { get; set; }
 
-            [LoadColumn(4)]
-            [ColumnName(@"Flight")]
-            public string Flight { get; set; }
+            [LoadColumn(3)]
+            [ColumnName(@"Destination")]
+            public string Destination { get; set; }
 
             [LoadColumn(5)]
             [ColumnName(@"Airline")]
@@ -44,8 +44,8 @@ namespace Project2
             [ColumnName(@"Time")]
             public float Time { get; set; }
 
-            [ColumnName(@"Flight")]
-            public float[] Flight { get; set; }
+            [ColumnName(@"Destination")]
+            public float[] Destination { get; set; }
 
             [ColumnName(@"Airline")]
             public float[] Airline { get; set; }

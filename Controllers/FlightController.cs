@@ -4,35 +4,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Project2;
 
 namespace Project2.Controllers
-{        
+{
     [ApiController]
     [Route("api/[controller]")]
-    public class FlightController : ControllerBase
+    public class PredictionController : ControllerBase
     {
+        private readonly IMLModelService _mlModelService;
 
-            private readonly FlightTraining _flightDataService;
-
-            public FlightController(FlightTraining flightDataService)
-            {
-                _flightDataService = flightDataService;
-            }
-
-            [HttpGet]
-            public async Task<IActionResult> GetFlights()
-            {
-                try
-                {
-                    List<FlightData> flights = await _flightDataService.GetFlightData();
-                    return Ok(flights);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, ex.Message); // Handle errors appropriately
-                }
-            }
-
-            // Implement a POST endpoint for predictions if using a machine learning model
+        public PredictionController(IMLModelService mlModelService)
+        {
+            _mlModelService = mlModelService;
         }
+
+        [HttpPost("predict")]
+        public IActionResult Predict([FromBody] FlightPrediction input)
+        {
+            var result = _mlModelService.Predict(input);
+            return Ok(result);
+        }
+    }
 }

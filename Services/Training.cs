@@ -3,45 +3,49 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-
+using Microsoft.ML;
+using System.IO;
 
 
 namespace Project2.Services
 {
-        public class FlightTraining
+    public class FlightPrediction
+    {
+        public float Time { get; set; }
+        public string Airline { get; set; }
+        public string Destination { get; set; }
+    }
+
+    public class FlightPredictionResult
+    {
+        public float Delay { get; set; }
+    }
+
+    public interface IMLModelService
+    {
+        FlightPredictionResult Predict(FlightPrediction input);
+    }
+
+    public class MLModelService : IMLModelService
+    {
+        private readonly PredictionEngine<FlightPrediction, FlightPredictionResult> _predictionEngine;
+
+        public MLModelService()
         {
-            private readonly string _connectionString;
+            var mlContext = new MLContext();
+            var modelPath = Path.Combine(Environment.CurrentDirectory, "MLModel.mlnet");
 
-            public FlightTraining(IConfiguration configuration)
-            {
-                _connectionString = configuration.GetConnectionString("DefaultConnection");
-            }
+            // Modeli yükleme
+            DataViewSchema modelInputSchema;
+            ITransformer mlModel = mlContext.Model.Load(modelPath, out modelInputSchema);
 
-            public async Task<List<FlightData>> GetFlightData()
-            {
-                List<FlightData> flights = new List<FlightData>();
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                {
-                    await conn.OpenAsync();
-                    string sql = "SELECT Time, Airline, Flight, Status FROM departuresdata";
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                flights.Add(new FlightData
-                                {
-                                    Time = reader.GetString(0),
-                                    Airline = reader.GetString(1),
-                                    Flight = reader.GetString(2),
-                                    Status = reader.IsDBNull(3) ? null : reader.GetString(3)
-                                });
-                            }
-                        }
-                    }
-                }
-                return flights;
-            }
+            // PredictionEngine yaratma
+            _predictionEngine = mlContext.Model.CreatePredictionEngine<FlightPrediction, FlightPredictionResult>(mlModel);
         }
+
+        public FlightPredictionResult Predict(FlightPrediction input)
+        {
+            return _predictionEngine.Predict(input);
+        }
+    }
 }
