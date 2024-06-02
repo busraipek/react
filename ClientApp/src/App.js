@@ -15,8 +15,7 @@ export default class App extends Component {
             <Layout>
                 <Route exact path='/' component={Home} />
                 <Route path='/counter' component={Counter} />
-                <Route path='/fetch-data' component={PredictStatus} />
-                <Route path='/predict-status' component={PredictStatus} />
+                <Route path='/predict' component={PredictStatus} />
             </Layout>
         );
     }

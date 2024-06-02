@@ -35,8 +35,7 @@ namespace Project2
                 configuration.RootPath = "ClientApp";
             });            
             services.AddControllers();
-            services.AddSingleton<IMLModelService, MLModelService>();
-
+            services.AddScoped<MLModelService>();
             services.AddHostedService<FlightWebScraping>();
             services.AddControllersWithViews();
         }

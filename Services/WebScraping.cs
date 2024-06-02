@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using Project2.Models;
 
 namespace Project2.Services
 {
