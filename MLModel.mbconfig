@@ -87,8 +87,8 @@
         "Version": 1,
         "Type": "Trial",
         "TrainerName": "LightGbmRegression",
-        "Score": 0.90987895263883611,
-        "RuntimeInSeconds": 13.664,
+        "Score": 0.91019976075806019,
+        "RuntimeInSeconds": 3.771,
         "Parameter": {
           "_SCHEMA_": "e0 * e1 * e2 * e5",
           "e0": {
@@ -118,112 +118,14 @@
             "OutputColumnName": "Features"
           },
           "e5": {
-            "NumberOfLeaves": 3437,
+            "NumberOfLeaves": 386,
             "MinimumExampleCountPerLeaf": 20,
-            "LearningRate": 0.99999977667298645,
-            "NumberOfTrees": 985,
-            "SubsampleFraction": 0.019948852929295786,
-            "MaximumBinCountPerFeature": 250,
-            "FeatureFraction": 0.87894134719578831,
-            "L1Regularization": 2.970009765225758E-10,
-            "L2Regularization": 0.31879328935971391,
-            "LabelColumnName": "Status",
-            "FeatureColumnName": "Features"
-          }
-        }
-      },
-      {
-        "Version": 1,
-        "Type": "Trial",
-        "TrainerName": "LightGbmRegression",
-        "Score": 0.90981080942492376,
-        "RuntimeInSeconds": 0.169,
-        "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e2 * e5",
-          "e0": {
-            "OutputColumnNames": [
-              "Destination",
-              "Airline"
-            ],
-            "InputColumnNames": [
-              "Destination",
-              "Airline"
-            ]
-          },
-          "e1": {
-            "OutputColumnNames": [
-              "Time"
-            ],
-            "InputColumnNames": [
-              "Time"
-            ]
-          },
-          "e2": {
-            "InputColumnNames": [
-              "Destination",
-              "Airline",
-              "Time"
-            ],
-            "OutputColumnName": "Features"
-          },
-          "e5": {
-            "NumberOfLeaves": 4,
-            "MinimumExampleCountPerLeaf": 26,
-            "LearningRate": 0.99999977667298645,
-            "NumberOfTrees": 78,
-            "SubsampleFraction": 0.18574043749049279,
-            "MaximumBinCountPerFeature": 227,
+            "LearningRate": 0.53092678925484393,
+            "NumberOfTrees": 408,
+            "SubsampleFraction": 0.3972897251564268,
+            "MaximumBinCountPerFeature": 334,
             "FeatureFraction": 0.99999999,
-            "L1Regularization": 2E-10,
-            "L2Regularization": 0.73500427498594434,
-            "LabelColumnName": "Status",
-            "FeatureColumnName": "Features"
-          }
-        }
-      },
-      {
-        "Version": 1,
-        "Type": "Trial",
-        "TrainerName": "LightGbmRegression",
-        "Score": 0.9090338893832921,
-        "RuntimeInSeconds": 0.184,
-        "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e2 * e5",
-          "e0": {
-            "OutputColumnNames": [
-              "Destination",
-              "Airline"
-            ],
-            "InputColumnNames": [
-              "Destination",
-              "Airline"
-            ]
-          },
-          "e1": {
-            "OutputColumnNames": [
-              "Time"
-            ],
-            "InputColumnNames": [
-              "Time"
-            ]
-          },
-          "e2": {
-            "InputColumnNames": [
-              "Destination",
-              "Airline",
-              "Time"
-            ],
-            "OutputColumnName": "Features"
-          },
-          "e5": {
-            "NumberOfLeaves": 1132,
-            "MinimumExampleCountPerLeaf": 20,
-            "LearningRate": 0.65836740138941652,
-            "NumberOfTrees": 4,
-            "SubsampleFraction": 0.76120425515597578,
-            "MaximumBinCountPerFeature": 187,
-            "FeatureFraction": 0.99999999,
-            "L1Regularization": 3.4479810349041066E-10,
+            "L1Regularization": 2.8258697176788861E-10,
             "L2Regularization": 0.99999977667298645,
             "LabelColumnName": "Status",
             "FeatureColumnName": "Features"
@@ -233,11 +135,11 @@
       {
         "Version": 1,
         "Type": "Trial",
-        "TrainerName": "FastForestRegression",
-        "Score": 0.90850484685467725,
-        "RuntimeInSeconds": 0.114,
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.91013472077321156,
+        "RuntimeInSeconds": 12.871,
         "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e2 * e4",
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
           "e0": {
             "OutputColumnNames": [
               "Destination",
@@ -264,10 +166,114 @@
             ],
             "OutputColumnName": "Features"
           },
-          "e4": {
-            "NumberOfTrees": 6,
-            "NumberOfLeaves": 22,
-            "FeatureFraction": 0.9272567,
+          "e5": {
+            "NumberOfLeaves": 1322,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.588780696575261,
+            "NumberOfTrees": 847,
+            "SubsampleFraction": 0.50422952811716282,
+            "MaximumBinCountPerFeature": 295,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.99999977667298645,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.91006296891097926,
+        "RuntimeInSeconds": 16.785,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Destination",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Destination",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Destination",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 1534,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.99999977667298645,
+            "NumberOfTrees": 1219,
+            "SubsampleFraction": 0.714315531293528,
+            "MaximumBinCountPerFeature": 415,
+            "FeatureFraction": 0.9515229809279272,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.74626711429918868,
+            "LabelColumnName": "Status",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.9100213349814531,
+        "RuntimeInSeconds": 3.371,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e5",
+          "e0": {
+            "OutputColumnNames": [
+              "Destination",
+              "Airline"
+            ],
+            "InputColumnNames": [
+              "Destination",
+              "Airline"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "Time"
+            ],
+            "InputColumnNames": [
+              "Time"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "Destination",
+              "Airline",
+              "Time"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e5": {
+            "NumberOfLeaves": 85,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.99999977667298645,
+            "NumberOfTrees": 665,
+            "SubsampleFraction": 0.24001895111242286,
+            "MaximumBinCountPerFeature": 229,
+            "FeatureFraction": 0.98571962660184265,
+            "L1Regularization": 2.0738564768274528E-10,
+            "L2Regularization": 0.5575735229536658,
             "LabelColumnName": "Status",
             "FeatureColumnName": "Features"
           }
@@ -277,8 +283,8 @@
         "Version": 1,
         "Type": "Trial",
         "TrainerName": "FastForestRegression",
-        "Score": 0.90850484685467725,
-        "RuntimeInSeconds": 0.133,
+        "Score": 0.90777688831456527,
+        "RuntimeInSeconds": 0.121,
         "Parameter": {
           "_SCHEMA_": "e0 * e1 * e2 * e4",
           "e0": {
@@ -308,9 +314,9 @@
             "OutputColumnName": "Features"
           },
           "e4": {
-            "NumberOfTrees": 6,
-            "NumberOfLeaves": 23,
-            "FeatureFraction": 0.9220687,
+            "NumberOfTrees": 4,
+            "NumberOfLeaves": 4,
+            "FeatureFraction": 0.9689439,
             "LabelColumnName": "Status",
             "FeatureColumnName": "Features"
           }

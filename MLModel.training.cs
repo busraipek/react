@@ -11,6 +11,7 @@ using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
 using Microsoft.ML;
 using System.Data.SqlClient;
+using Microsoft.ML.Data;
 
 namespace Project2
 {
@@ -48,7 +49,7 @@ namespace Project2
 
             return loader.Load(dbSource);
         }
-        ///
+
         /// <summary>
         /// Save a model at the specified path.
         /// </summary>
@@ -93,7 +94,7 @@ namespace Project2
             var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"Destination", @"Destination"),new InputOutputColumnPair(@"Airline", @"Airline")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
                                     .Append(mlContext.Transforms.ReplaceMissingValues(@"Time", @"Time"))      
                                     .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Destination",@"Airline",@"Time"}))      
-                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=3437,NumberOfIterations=985,MinimumExampleCountPerLeaf=20,LearningRate=0.999999776672986,LabelColumnName=@"Status",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.0199488529292958,FeatureFraction=0.878941347195788,L1Regularization=2.97000976522576E-10,L2Regularization=0.318793289359714},MaximumBinCountPerFeature=250}));
+                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=386,NumberOfIterations=408,MinimumExampleCountPerLeaf=20,LearningRate=0.530926789254844,LabelColumnName=@"Status",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.397289725156427,FeatureFraction=0.99999999,L1Regularization=2.82586971767889E-10,L2Regularization=0.999999776672986},MaximumBinCountPerFeature=334}));
 
             return pipeline;
         }
