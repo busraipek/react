@@ -6,9 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ML.Data;
-using Microsoft.ML.Trainers.LightGbm;
+using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers;
-using Microsoft.ML.Transforms;
 using Microsoft.ML;
 using System.Data.SqlClient;
 using Microsoft.ML.Data;
@@ -91,10 +90,11 @@ namespace Project2
         public static IEstimator<ITransformer> BuildPipeline(MLContext mlContext)
         {
             // Data process configuration with pipeline data transformations
-            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"Destination", @"Destination"),new InputOutputColumnPair(@"Airline", @"Airline")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
-                                    .Append(mlContext.Transforms.ReplaceMissingValues(@"Time", @"Time"))      
-                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Destination",@"Airline",@"Time"}))      
-                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=386,NumberOfIterations=408,MinimumExampleCountPerLeaf=20,LearningRate=0.530926789254844,LabelColumnName=@"Status",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.397289725156427,FeatureFraction=0.99999999,L1Regularization=2.82586971767889E-10,L2Regularization=0.999999776672986},MaximumBinCountPerFeature=334}));
+            var pipeline = mlContext.Transforms.ReplaceMissingValues(@"Time", @"Time")      
+                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"Destination",outputColumnName:@"Destination"))      
+                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"Airline",outputColumnName:@"Airline"))      
+                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Time",@"Destination",@"Airline"}))      
+                                    .Append(mlContext.Regression.Trainers.FastForest(new FastForestRegressionTrainer.Options(){NumberOfTrees=19,NumberOfLeaves=4,FeatureFraction=1F,LabelColumnName=@"Status",FeatureColumnName=@"Features"}));
 
             return pipeline;
         }
